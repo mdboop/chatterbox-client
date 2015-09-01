@@ -4,7 +4,8 @@ var app = {
   refreshInterval: 3000,
   username: window.location.search.split('=')[1],
   currentRoom: 'lobby',
-  rooms: {}
+  rooms: {},
+  friends: {}
 };
 /***********************
  INITIALIZING FUNCTIONS
@@ -70,35 +71,41 @@ app.clearMessages = function(){
   $('#chats').empty();
 };
 
-
-
 app.addMessage = function(message){
   var cleanUserName = escaper(message.username);
   var cleanText = escaper(message.text);
   var $message = $('<div class="message"></div>');
-  var $username = $('<div class="username">' + cleanUserName + '</div>');
-  var $text = $('<div class="text">' + cleanText + '</div>');
+  var $username = $('<span class="username">' + cleanUserName + ': ' + '</span>');
+  var $text = $('<span class="text">' + cleanText + '</span>');
   $message.append($username);
   $message.append($text);
   $('#chats').append($message);
-}
+};
+// var makeNewTweet = function(tweet){
+//           var $tweet = $('<div class="tweet"></div>');
+//           var $user = $('<div class="user"></div>');
+//           var $timestamp = $('<div class="timestamp"></div>');
+//           var $message = $('<div class="message"></div>');
+//           $user.text('@' + tweet.user);
+//           $timestamp.text(moment(tweet.created_at).fromNow());
+//           $message.text(tweet.message);
+//           $user.appendTo($tweet);
+//           $timestamp.appendTo($tweet);
+//           $message.appendTo($tweet);
+//           return $tweet;
+//         };
 
 var displayMessages = function(data) {
   $('#chats > div').remove();
   var $chat = $('#chats');
-  var message;
-  var cleanedName;
-  var cleanedMessage;
   for(var i = 0; i < data.results.length; i++) {
     if(data.results[i].roomname === app.currentRoom) {
-      cleanedName = escaper(data.results[i].username);
-      cleanedMessage = escaper(data.results[i].text);
-      $message = '<div>' + cleanedName + ': ' + cleanedMessage + '</div>'
-      $chat.append($message);
+      app.addMessage(data.results[i]);
     }
   }
-
 };
+
+
 
 app.addRoom = function(roomName) {
   $('#roomSelector').append($('<option value="' + roomName + '"">' + roomName +'</option>'));
@@ -113,16 +120,12 @@ app.getRooms = function(data) {
 };
 
 app.changeRooms = function() {
-  console.log('works!');
   var room = $('#roomSelector').val();
   // untoggle currentRoom -> make unselected
   app.currentRoom = room;
   // toggle on new current room
   app.fetch(displayMessages);
-
-
-  //update messages to display only new room's messages
-}
+};
 
 app.displayRooms = function(){
   $(document).ready(function(){
@@ -156,7 +159,6 @@ var escaper = function(rawMessage){
       newMessage += rawMessage[i];
     }
   }
-
   return newMessage;
 };
 
@@ -165,7 +167,7 @@ var escaper = function(rawMessage){
 ****************/
 $(document).ready(function(){
   app.init();
-})
+});
 
 $(document).ready(function() {
   $('.chatSend').on('click', function() {

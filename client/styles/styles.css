@@ -82,3 +82,20 @@ form input[type=text] {
 .spinner img {
     padding: 10px;
 }
+
+.message {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    border: solid 1px black;
+}
+
+.message:hover {
+    background-color: limegreen;
+}
+
+.username {
+    display: inline;
+    color: green;
+    size: 25px;
+}

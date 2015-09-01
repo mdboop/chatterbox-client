@@ -2,7 +2,9 @@
 var app = {
   server: 'https://api.parse.com/1/classes/chatterbox',
   refreshInterval: 3000,
-  username: window.location.search.split('=')[1]
+  username: window.location.search.split('=')[1],
+  roomname: 'general',
+  rooms: {}
 };
 /***********************
  INITIALIZING FUNCTIONS
@@ -20,7 +22,20 @@ app.init = function(){
 ************************/
 
 app.send = function(message){
-
+  $.ajax({
+    // This is the url you should use to communicate with the parse API server.
+    url: app.server,
+    type: 'POST',
+    data: JSON.stringify(message),
+    contentType: 'application/json',
+    success: function (data) {
+      console.log('chatterbox: Message sent');
+    },
+    error: function (data) {
+      // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+      console.error('chatterbox: Failed to send message');
+    }
+  });
 };
 
 /***********************
@@ -81,6 +96,17 @@ var displayMessages = function(data) {
 
 };
 
+app.getRooms = function(data) {
+  var chatData = data.results;
+  console.dir(chatData);
+  app.rooms = {};
+  for(var i = 0; i < chatData.length; i++) {
+    app.rooms[chatData[i].roomname] = true;
+  }
+  console.dir(chatData);
+  console.dir(app.rooms);
+};
+
 /***************
  SECURITY
 ****************/
@@ -112,5 +138,43 @@ var escaper = function(rawMessage){
 /***************
  MAKE IT SO!
 ****************/
-app.init();
+$(document).ready(function(){
+  app.init();
+})
 
+$(document).ready(function() {
+  $('.chatSend').on('click', function() {
+    var textbox = $('.chatDraft');
+    var text = textbox.val();
+    var message = {
+      username: app.username,
+      text: text,
+      roomname: app.roomname
+    };
+
+    app.send(message);
+
+  });
+});
+
+var displayRooms = function(){
+  $(document).ready(function(){
+    for(var room in app.rooms){
+      $('#roomSelector').append($('<option value="' + room + '"">'+room+'</option>'));
+    }
+  });
+};
+
+
+// $('.chatSend').on('click', function(event){
+//   event.preventDefault();
+//   var rawMessage = $('.chatDraft').val();
+//   console.log(rawMessage);
+//   var cleanMessage = escaper(rawMessage);
+//   var message = {
+//     username: app.username,
+//     text: this.text,
+//     roomname: app.roomname
+//   };
+//   app.send(message);
+// });

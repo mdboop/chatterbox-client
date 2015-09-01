@@ -1,7 +1,7 @@
 // YOUR CODE HERE:
 var app = {
   server: 'https://api.parse.com/1/classes/chatterbox',
-  refreshInterval: 30000,
+  refreshInterval: 3000,
   username: window.location.search.split('=')[1],
   currentRoom: 'lobby',
   rooms: {},
@@ -127,7 +127,7 @@ app.changeRooms = function() {
   var room = $('#roomSelector').val();
   // untoggle currentRoom -> make unselected
   if(room === 'New room...'){
-    app.currentRoom = prompt("Enter a room name:");
+    app.currentRoom = prompt("Enter a room name:") || app.currentRoom;
     app.addRoom(app.currentRoom);
   } else {
   app.currentRoom = room;
@@ -139,10 +139,10 @@ app.changeRooms = function() {
 app.displayRooms = function(){
   $(document).ready(function(){
     $('#roomSelector').empty();
-    app.addRoom('New room...')
     for(var room in app.rooms){
       app.addRoom(room);
     }
+    app.addRoom('New room...')
   });
 };
 /***************

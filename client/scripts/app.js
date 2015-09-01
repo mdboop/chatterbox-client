@@ -84,19 +84,6 @@ app.addMessage = function(message){
   }
   $('#chats').append($message);
 };
-// var makeNewTweet = function(tweet){
-//           var $tweet = $('<div class="tweet"></div>');
-//           var $user = $('<div class="user"></div>');
-//           var $timestamp = $('<div class="timestamp"></div>');
-//           var $message = $('<div class="message"></div>');
-//           $user.text('@' + tweet.user);
-//           $timestamp.text(moment(tweet.created_at).fromNow());
-//           $message.text(tweet.message);
-//           $user.appendTo($tweet);
-//           $timestamp.appendTo($tweet);
-//           $message.appendTo($tweet);
-//           return $tweet;
-//         };
 
 var displayMessages = function(data) {
   $('#chats > div').remove();
@@ -107,8 +94,6 @@ var displayMessages = function(data) {
     }
   }
 };
-
-
 
 app.addRoom = function(roomName) {
   $('#roomSelector').append($('<option value="' + roomName + '"">' + roomName +'</option>'));
@@ -189,7 +174,10 @@ $(document).ready(function() {
 
   $('body').on('click', '.message', function() {
     var friend = $(this).find('.username').text();
-    console.log(friend);
-    // app.friends[friend] = true;
+    if(friend in app.friends) {
+      delete app.friends[friend];
+    } else {
+      app.friends[friend] = true;
+    }
   });
 });

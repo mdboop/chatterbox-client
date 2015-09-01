@@ -11,13 +11,9 @@ var app = {
  INITIALIZING FUNCTIONS
 ************************/
 app.init = function(){
-  app.fetch(displayMessages);
-  app.fetch(app.getRooms);
-  app.displayRooms();
+  app.update();
   setInterval(function() {
-    app.fetch(displayMessages);
-    app.fetch(app.getRooms);
-    app.displayRooms();
+    app.update();
   },app.refreshInterval);
 };
 
@@ -41,6 +37,20 @@ app.send = function(message){
     }
   });
 };
+
+app.sendButtonHandler = function(){
+  var textbox = $('.chatDraft');
+  var text = textbox.val();
+  var message = {
+    username: app.username,
+    text: text,
+    roomname: app.currentRoom
+  };
+  textbox.val('');
+  app.send(message);
+  app.update();
+
+}
 
 /***********************
  FETCHING
@@ -67,6 +77,12 @@ app.fetch = function(callback) {
 /***********************
  CHAT ROOM BEHAVIOR
 ************************/
+app.update = function(){
+  app.fetch(displayMessages);
+  app.fetch(app.getRooms);
+  app.displayRooms();
+}
+
 app.clearMessages = function(){
   $('#chats').empty();
 };
@@ -110,14 +126,20 @@ app.getRooms = function(data) {
 app.changeRooms = function() {
   var room = $('#roomSelector').val();
   // untoggle currentRoom -> make unselected
+  if(room === 'New room...'){
+    app.currentRoom = prompt("Enter a room name:");
+    app.addRoom(app.currentRoom);
+  } else {
   app.currentRoom = room;
   // toggle on new current room
+  }
   app.fetch(displayMessages);
 };
 
 app.displayRooms = function(){
   $(document).ready(function(){
     $('#roomSelector').empty();
+    app.addRoom('New room...')
     for(var room in app.rooms){
       app.addRoom(room);
     }
@@ -159,16 +181,11 @@ $(document).ready(function(){
 
 $(document).ready(function() {
   $body = $('body');
-  $('.chatSend').on('click', function() {
-    var textbox = $('.chatDraft');
-    var text = textbox.val();
-    var message = {
-      username: app.username,
-      text: text,
-      roomname: app.currentRoom
-    };
-
-    app.send(message);
+  $('.chatSend').on('click', app.sendButtonHandler);
+  $('.chatDraft').on('keyup', function( event ){
+    if (event.which === 13){
+      app.sendButtonHandler();
+    }
   });
 
 
@@ -179,5 +196,6 @@ $(document).ready(function() {
     } else {
       app.friends[friend] = true;
     }
+    app.update();
   });
 });

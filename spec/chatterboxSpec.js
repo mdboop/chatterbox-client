@@ -113,7 +113,7 @@ describe('chatterbox', function() {
       });
 
       it('should try to send a message upon clicking submit', function(){
-        sinon.spy(app, 'handleSubmit');
+        sinon.spy(app, 'sendButtonHandler');
 
         $('#message').val('Why so many Mel Brooks quotes?');
 

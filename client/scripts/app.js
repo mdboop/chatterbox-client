@@ -1,7 +1,8 @@
 // YOUR CODE HERE:
 var app = {
   server: 'https://api.parse.com/1/classes/chatterbox',
-  refreshInterval: 3000
+  refreshInterval: 3000,
+  username: window.location.search.split('=')[1]
 };
 /***********************
  INITIALIZING FUNCTIONS
@@ -19,7 +20,7 @@ app.init = function(){
 ************************/
 
 app.send = function(message){
-  
+
 };
 
 /***********************

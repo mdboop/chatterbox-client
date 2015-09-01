@@ -1,4 +1,31 @@
 // YOUR CODE HERE:
+var app = {
+  server: 'https://api.parse.com/1/classes/chatterbox',
+  refreshInterval: 3000
+};
+
+app.init = function(){
+  app.fetch(displayMessages);
+
+  setInterval(function() {
+    app.fetch(displayMessages);
+  },app.refreshInterval);
+};
+
+app.clearMessages = function(){
+  $('#chats').empty();
+};
+
+app.addMessage = function(message){
+  var cleanUserName = escaper(message.username);
+  var cleanText = escaper(message.text);
+  var $message = $('<div class="message"></div>');
+  var $username = $('<div class="username">' + cleanUserName + '</div>');
+  var $text = $('<div class="text">' + cleanText + '</div>');
+  $message.append($username);
+  $message.append($text);
+  $('#chats').append($message);
+}
 var escaper = function(rawMessage){
   var escapes = {
     '&':'&amp;',
@@ -9,7 +36,7 @@ var escaper = function(rawMessage){
     '/':'&#x2F;'
   }
   var newMessage = ''
-  if (rawMessage === null){
+  if (rawMessage === null || rawMessage === undefined){
     return '';
   }
   for (var i = 0; i < rawMessage.length; i++){
@@ -23,14 +50,13 @@ var escaper = function(rawMessage){
   return newMessage;
 };
 
-
-var fetch = function(callback) {
+app.fetch = function(callback) {
 
   $.ajax({
     // This is the url you should use to communicate with the parse API server.
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: app.server,
     type: 'GET',
-    // data: JSON,
+    data: JSON,
     contentType: 'application/json',
     success: function (data) {
       callback(data);
@@ -45,6 +71,7 @@ var fetch = function(callback) {
 
 var displayMessages = function(data) {
 
+  $('#chats > div').remove();
   var $chat = $('#chats');
   var message;
   var cleanedName;
@@ -54,17 +81,9 @@ var displayMessages = function(data) {
     cleanedMessage = escaper(data.results[i].text);
     $message = '<div>' + i + ' - ' + cleanedName + ': ' + cleanedMessage + '</div>'
     $chat.append($message);
-    // $message = $('div');
-    // cleanedName = escaper(data.results[i].username);
-    // cleanedMessage = escaper(data.results[i].text);
-    // $message.text(cleanedName + ': ' + cleanedMessage);
-    // $chat.append($message);
   }
 
 };
-// createdAt: "2015-08-31T22:41:38.512Z"
-// objectId: "oBOg8Gi0LT"
-// roomname: "4chan"
-// text: "</div><script>while(true){console.log("you got hacked")}<!--"
-// updatedAt: "2015-08-31T22:41:38.512Z"
-// username: "dd"
+
+app.init();
+

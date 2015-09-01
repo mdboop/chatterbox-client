@@ -3,7 +3,7 @@ var app = {
   server: 'https://api.parse.com/1/classes/chatterbox',
   refreshInterval: 3000,
   username: window.location.search.split('=')[1],
-  roomname: 'general',
+  currentRoom: 'lobby',
   rooms: {}
 };
 /***********************
@@ -11,9 +11,12 @@ var app = {
 ************************/
 app.init = function(){
   app.fetch(displayMessages);
-
+  app.fetch(app.getRooms);
+  app.displayRooms();
   setInterval(function() {
     app.fetch(displayMessages);
+    app.fetch(app.getRooms);
+    app.displayRooms();
   },app.refreshInterval);
 };
 
@@ -81,32 +84,54 @@ app.addMessage = function(message){
 }
 
 var displayMessages = function(data) {
-
   $('#chats > div').remove();
   var $chat = $('#chats');
   var message;
   var cleanedName;
   var cleanedMessage;
   for(var i = 0; i < data.results.length; i++) {
-    cleanedName = escaper(data.results[i].username);
-    cleanedMessage = escaper(data.results[i].text);
-    $message = '<div>' + i + ' - ' + cleanedName + ': ' + cleanedMessage + '</div>'
-    $chat.append($message);
+    if(data.results[i].roomname === app.currentRoom) {
+      cleanedName = escaper(data.results[i].username);
+      cleanedMessage = escaper(data.results[i].text);
+      $message = '<div>' + cleanedName + ': ' + cleanedMessage + '</div>'
+      $chat.append($message);
+    }
   }
 
+};
+
+app.addRoom = function(roomName) {
+  $('#roomSelector').append($('<option value="' + roomName + '"">' + roomName +'</option>'));
 };
 
 app.getRooms = function(data) {
   var chatData = data.results;
-  console.dir(chatData);
   app.rooms = {};
   for(var i = 0; i < chatData.length; i++) {
-    app.rooms[chatData[i].roomname] = true;
+    app.rooms[escaper(chatData[i].roomname)] = true;
   }
-  console.dir(chatData);
-  console.dir(app.rooms);
 };
 
+app.changeRooms = function() {
+  console.log('works!');
+  var room = $('#roomSelector').val();
+  // untoggle currentRoom -> make unselected
+  app.currentRoom = room;
+  // toggle on new current room
+  app.fetch(displayMessages);
+
+
+  //update messages to display only new room's messages
+}
+
+app.displayRooms = function(){
+  $(document).ready(function(){
+    $('#roomSelector').empty();
+    for(var room in app.rooms){
+      app.addRoom(room);
+    }
+  });
+};
 /***************
  SECURITY
 ****************/
@@ -149,32 +174,10 @@ $(document).ready(function() {
     var message = {
       username: app.username,
       text: text,
-      roomname: app.roomname
+      roomname: app.currentRoom
     };
 
     app.send(message);
 
   });
 });
-
-var displayRooms = function(){
-  $(document).ready(function(){
-    for(var room in app.rooms){
-      $('#roomSelector').append($('<option value="' + room + '"">'+room+'</option>'));
-    }
-  });
-};
-
-
-// $('.chatSend').on('click', function(event){
-//   event.preventDefault();
-//   var rawMessage = $('.chatDraft').val();
-//   console.log(rawMessage);
-//   var cleanMessage = escaper(rawMessage);
-//   var message = {
-//     username: app.username,
-//     text: this.text,
-//     roomname: app.roomname
-//   };
-//   app.send(message);
-// });

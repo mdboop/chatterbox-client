@@ -18,9 +18,7 @@
       <!-- Your HTML goes here! -->
     </div>
     <div id="chatbox">
-        <select name="rooms" id="roomSelector">
-
-        </select>
+        <select name="rooms" id="roomSelector" onchange="app.changeRooms()"></select>
         <input class="chatDraft" type='text'/><button class="chatSend">send</button>
     </div>
     <div id="chats">

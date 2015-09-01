@@ -1,7 +1,7 @@
 // YOUR CODE HERE:
 var app = {
   server: 'https://api.parse.com/1/classes/chatterbox',
-  refreshInterval: 3000,
+  refreshInterval: 30000,
   username: window.location.search.split('=')[1],
   currentRoom: 'lobby',
   rooms: {},
@@ -75,10 +75,13 @@ app.addMessage = function(message){
   var cleanUserName = escaper(message.username);
   var cleanText = escaper(message.text);
   var $message = $('<div class="message"></div>');
-  var $username = $('<span class="username">' + cleanUserName + ': ' + '</span>');
+  var $username = $('<span class="username">' + cleanUserName+ '</span>');
   var $text = $('<span class="text">' + cleanText + '</span>');
   $message.append($username);
   $message.append($text);
+  if(app.friends[message.username]) {
+    $text.addClass('friend');
+  }
   $('#chats').append($message);
 };
 // var makeNewTweet = function(tweet){
@@ -147,8 +150,8 @@ var escaper = function(rawMessage){
     '\'':'&#x27;',
     '"':'&quot;',
     '/':'&#x2F;'
-  }
-  var newMessage = ''
+  };
+  var newMessage = '';
   if (rawMessage === null || rawMessage === undefined){
     return '';
   }
@@ -170,6 +173,7 @@ $(document).ready(function(){
 });
 
 $(document).ready(function() {
+  $body = $('body');
   $('.chatSend').on('click', function() {
     var textbox = $('.chatDraft');
     var text = textbox.val();
@@ -180,6 +184,12 @@ $(document).ready(function() {
     };
 
     app.send(message);
+  });
 
+
+  $('body').on('click', '.message', function() {
+    var friend = $(this).find('.username').text();
+    console.log(friend);
+    // app.friends[friend] = true;
   });
 });

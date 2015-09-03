@@ -25,13 +25,14 @@
     <div id="chats">
     </div>
     <script>
-    $(function(){
-        var messages     = new Messages();
-        var formView     = new FormView({el: $('#chatbox'),  collection: messages});
-        var messagesView = new MessagesView({el: $('#chats'), collection: messages});
-        setInterval(messages.loadMessages.bind(messages), 1000);
-        messages.loadMessages();
-      });
+    
+    // $(function(){
+    //     var messages     = new Messages();
+    //     var formView     = new FormView({el: $('#chatbox'),  collection: messages});
+    //     var messagesView = new MessagesView({el: $('#chats'), collection: messages});
+    //     setInterval(messages.loadMessages.bind(messages), 1000);
+    //     messages.loadMessages();
+    //   });
     </script>
   </body>
 </html>

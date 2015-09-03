@@ -50,7 +50,7 @@ app.sendButtonHandler = function(){
   app.send(message);
   app.update();
 
-}
+};
 
 /***********************
  FETCHING
@@ -81,7 +81,7 @@ app.update = function(){
   app.fetch(displayMessages);
   app.fetch(app.getRooms);
   app.displayRooms();
-}
+};
 
 app.clearMessages = function(){
   $('#chats').empty();
@@ -142,7 +142,7 @@ app.displayRooms = function(){
     for(var room in app.rooms){
       app.addRoom(room);
     }
-    app.addRoom('New room...')
+    app.addRoom('New room...');
   });
 };
 /***************

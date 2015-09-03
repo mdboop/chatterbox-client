@@ -20,9 +20,18 @@
     </div>
     <div id="chatbox">
         <select name="rooms" id="roomSelector" onchange="app.changeRooms()"></select>
-        <input class="chatDraft" type='text'/><button class="chatSend">send</button>
+        <input class="chatDraft" type='text'/><button id="send">send</button>
     </div>
     <div id="chats">
     </div>
+    <script>
+    $(function(){
+        var messages     = new Messages();
+        var formView     = new FormView({el: $('#chatbox'),  collection: messages});
+        var messagesView = new MessagesView({el: $('#chats'), collection: messages});
+        setInterval(messages.loadMessages.bind(messages), 1000);
+        messages.loadMessages();
+      });
+    </script>
   </body>
 </html>

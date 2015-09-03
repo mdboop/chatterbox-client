@@ -91,7 +91,7 @@ form input[type=text] {
 }
 
 .message:hover {
-    background-color: limegreen;
+    background-color: #dedee0;
 }
 
 .username {

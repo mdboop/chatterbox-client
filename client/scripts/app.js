@@ -1,59 +1,3 @@
-//////////////////////////////////
-// Backbone Refactor
-//////////////////////////////////
-
-var Message = Backbone.Model.extend({
-  url: 'https://api.parse.com/1/classes/chatterbox',
-  defaults: {
-
-  },
-});
-
-var Messages = Backbone.Collection.extend({
-  
-  model: Message,
-  url: 'https://api.parse.com/1/classes/chatterbox',
-
-
-  loadMessages: function() {
-    this.fetch({data: { order: '-createdAt'}});
-  },
-  parse: function(response, options) {
-    return response.results;
-  }
-});
-
-var MessageView = Backbone.View.extend({
-  initialize: function() {
-
-  }
-
-});
-
-var MessagesView = Backbone.View.extend({
-  initialize: function() {
-    
-  }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 var app = {
   server: 'https://api.parse.com/1/classes/chatterbox',
@@ -232,27 +176,27 @@ var escaper = function(rawMessage){
  MAKE IT SO!
 ****************/
 $(document).ready(function(){
-  // app.init();
+  app.init();
 });
 
-// $(document).ready(function() {
-//   $body = $('body');
-//   $('.chatSend').on('click', app.sendButtonHandler);
-//   $('.chatDraft').on('keyup', function( event ){
-//     if (event.which === 13){
-//       app.sendButtonHandler();
-//     }
-//   });
+$(document).ready(function() {
+  $body = $('body');
+  $('.chatSend').on('click', app.sendButtonHandler);
+  $('.chatDraft').on('keyup', function( event ){
+    if (event.which === 13){
+      app.sendButtonHandler();
+    }
+  });
 
 
-//   $('body').on('click', '.message', function() {
-//     var friend = $(this).find('.username').text();
-//     if(friend in app.friends) {
-//       delete app.friends[friend];
-//     } else {
-//       app.friends[friend] = true;
-//     }
-//     app.update();
-//   });
-// });
+  $('body').on('click', '.message', function() {
+    var friend = $(this).find('.username').text();
+    if(friend in app.friends) {
+      delete app.friends[friend];
+    } else {
+      app.friends[friend] = true;
+    }
+    app.update();
+  });
+});
 
